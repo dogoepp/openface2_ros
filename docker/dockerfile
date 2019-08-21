@@ -44,3 +44,13 @@ RUN bash -c "cd /root/catkin_ws && source /opt/ros/melodic/setup.bash && catkin_
 
 RUN apt-get update && apt-get install -y ros-melodic-usb-cam
 
+# Load ROS environment at each run
+COPY ./ros_entrypoint.sh /
+ENTRYPOINT ["/ros_entrypoint.sh"]
+
+# Load ROS environment at exec bash
+RUN echo "source /opt/ros/melodic/setup.bash" >> /root/.bashrc
+RUN echo "source /root/catkin_ws/devel/setup.bash" >> /root/.bashrc
+
+WORKDIR /root/catkin_ws
+CMD ["bash"]
