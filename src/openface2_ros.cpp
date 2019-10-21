@@ -71,7 +71,7 @@ namespace
   static geometry_msgs::Quaternion operator *(const geometry_msgs::Quaternion &a, const geometry_msgs::Quaternion &b)
   {
     geometry_msgs::Quaternion q;
-    
+
     q.w = a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z;  // 1
     q.x = a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y;  // i
     q.y = a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x;  // j
@@ -118,7 +118,7 @@ namespace openface2_ros
       NodeHandle pnh("~");
 
       if(!pnh.getParam("image_topic", image_topic_)) throw invalid_argument("Expected ~image_topic parameter");
-      
+
       const auto base_path = package::getPath("openface2_ros");
 
       pnh.param<bool>("publish_viz", publish_viz_, false);
@@ -136,11 +136,11 @@ namespace openface2_ros
       if(publish_viz_) viz_pub_ = it_.advertise("openface2/image", 1);
       init_openface_();
     }
-    
+
     ~OpenFace2Ros()
     {
     }
-    
+
   private:
     void init_openface_()
     {
@@ -329,12 +329,12 @@ namespace openface2_ros
 				// Estimate head pose and eye gaze
 	            Face face;
 
-          	    // Estimate head pose and eye gaze				
+          	    // Estimate head pose and eye gaze
 			    cv::Vec6d head_pose = LandmarkDetector::GetPose(face_models[model], fx, fy, cx, cy);
 	            face.head_pose.position.x = head_pose[0];
 	            face.head_pose.position.y = head_pose[1];
 	            face.head_pose.position.z = head_pose[2];
-	          
+
 	            const auto head_orientation = toQuaternion(head_pose[4], -head_pose[3], -head_pose[5]);
 	            face.head_pose.orientation = toQuaternion(M_PI,  0,  0);//toQuaternion(M_PI / 2, 0, M_PI / 2);// toQuaternion(0, 0, 0);
 	            face.head_pose.orientation = face.head_pose.orientation * head_orientation;
@@ -350,7 +350,7 @@ namespace openface2_ros
 	            transform.transform.translation.z = face.head_pose.position.z / 1000.0;
 	            transform.transform.rotation = face.head_pose.orientation;
 	            tf_br_.sendTransform(transform);
-          
+
           	    const std::vector<cv::Point3f> eye_landmarks3d = LandmarkDetector::Calculate3DEyeLandmarks(face_models[model], fx, fy, cx, cy);
 			    cv::Point3f gaze_direction0(0, 0, 0); cv::Point3f gaze_direction1(0, 0, 0); cv::Vec2d gaze_angle(0, 0);
 
@@ -360,7 +360,7 @@ namespace openface2_ros
             		GazeAnalysis::EstimateGaze(face_models[model], gaze_direction0, fx, fy, cx, cy, true);
 					GazeAnalysis::EstimateGaze(face_models[model], gaze_direction1, fx, fy, cx, cy, false);
 
-		            gaze_angle = GazeAnalysis::GetGazeAngle(gaze_direction0, gaze_direction1);	
+		            gaze_angle = GazeAnalysis::GetGazeAngle(gaze_direction0, gaze_direction1);
 
 		            face.left_gaze.orientation = toQuaternion(M_PI , 0, 0) * toQuaternion(gaze_direction0.y, -gaze_direction0.x, -gaze_direction0.z);
 		            face.right_gaze.orientation = toQuaternion(M_PI , 0, 0) * toQuaternion(gaze_direction1.y, -gaze_direction1.x, -gaze_direction1.z);
@@ -407,7 +407,7 @@ namespace openface2_ros
 		            transform.transform.rotation = face.right_gaze.orientation;
 		            tf_br_.sendTransform(transform);
           		}
-       
+
   	            //extract facial landmarks
       		    const auto &landmarks = face_models[model].detected_landmarks;
           		for(unsigned i = 0; i < face_models[model].pdm.NumberOfPoints(); ++i)
@@ -438,7 +438,7 @@ namespace openface2_ros
 
           		auto aus_reg = face_analyser.GetCurrentAUsReg();
           		auto aus_class = face_analyser.GetCurrentAUsClass();
-        
+
           		unordered_map<string, ActionUnit> aus;
           		for(const auto &au_reg : aus_reg)
           		{
@@ -481,7 +481,7 @@ namespace openface2_ros
           		}
 
           		if(publish_viz_)
-          		{ 
+          		{
             		//visualizer.SetObservationFaceAlign(sim_warped_img);
             		//visualizer.SetObservationHOG(hog_descriptor, num_hog_rows, num_hog_cols);
             		visualizer.SetObservationLandmarks(face_models[model].detected_landmarks, face_models[model].detection_certainty);
@@ -498,7 +498,7 @@ namespace openface2_ros
   		faces_pub_.publish(faces);
 
       	if(publish_viz_)
-      	{ 
+      	{
         	visualizer.SetFps(fps_tracker.GetFPS());
         	visualizer.ShowObservation();
         	cv::waitKey(20);
@@ -508,7 +508,7 @@ namespace openface2_ros
     }
 
     tf2_ros::TransformBroadcaster tf_br_;
-    
+
     // The modules that are being used for tracking
 	vector<LandmarkDetector::CLNF> face_models;
 	vector<bool> active_models;
@@ -539,14 +539,16 @@ namespace openface2_ros
 int main(int argc, char *argv[])
 {
   init(argc, argv, "openface2_ros");
-  
+
   using namespace openface2_ros;
 
+	std::cout << "Before Critical" << std::endl;
   NodeHandle nh;
 
   // Load facial feature extractor and AU analyser (make sure it is static, as we don't reidentify faces)
 	FaceAnalysis::FaceAnalyserParameters face_analysis_params;
 	face_analysis_params.OptimizeForImages();
+  std::cout << "After Critical" << std::endl;
 
   try
   {
@@ -558,6 +560,6 @@ int main(int argc, char *argv[])
     ROS_FATAL("%s", e.what());
     return EXIT_FAILURE;
   }
-  
-  return EXIT_SUCCESS; 
+
+  return EXIT_SUCCESS;
 }
