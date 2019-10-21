@@ -559,6 +559,9 @@ int main(int argc, char *argv[])
 	std::cout << e.what() << std::endl;
     return EXIT_FAILURE;
   }
+  catch(...) {
+    std::cout << "Some exception arised..." << std::endl;
+  }
 
   return EXIT_SUCCESS;
 }
