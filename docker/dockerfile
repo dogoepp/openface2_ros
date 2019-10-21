@@ -22,7 +22,7 @@ RUN tar xf dlib-19.13.tar.bz2
 RUN mkdir -p dlib-19.13/build
 WORKDIR /root/dlib-19.13/build
 RUN cmake ..
-RUN cmake --build . --config Release 
+RUN cmake --build . --config Release
 RUN make install
 
 # Install OpenFace 2.1.0
@@ -33,7 +33,7 @@ RUN git checkout OpenFace_2.1.0
 RUN bash ./download_models.sh
 RUN mkdir build
 WORKDIR /root/OpenFace/build
-RUN cmake -D CMAKE_BUILD_TYPE=RELEASE CMAKE_CXX_FLAGS="-std=c++11" -D CMAKE_EXE_LINKER_FLAGS="-std=c++11" .. 
+RUN cmake -D CMAKE_BUILD_TYPE=RELEASE CMAKE_CXX_FLAGS="-std=c++11" -D CMAKE_EXE_LINKER_FLAGS="-std=c++11" ..
 RUN make -j8
 RUN make install
 
