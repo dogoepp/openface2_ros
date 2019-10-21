@@ -556,7 +556,7 @@ int main(int argc, char *argv[])
   catch(const exception &e)
   {
     ROS_FATAL("%s", e.what());
-	std::cout << e.what << std::endl;
+	std::cout << e.what() << std::endl;
     return EXIT_FAILURE;
   }
 
