@@ -542,13 +542,11 @@ int main(int argc, char *argv[])
 
   using namespace openface2_ros;
 
-	std::cout << "Before Critical" << std::endl;
   NodeHandle nh;
 
   // Load facial feature extractor and AU analyser (make sure it is static, as we don't reidentify faces)
 	FaceAnalysis::FaceAnalyserParameters face_analysis_params;
 	face_analysis_params.OptimizeForImages();
-  std::cout << "After Critical" << std::endl;
 
   try
   {
@@ -558,6 +556,7 @@ int main(int argc, char *argv[])
   catch(const exception &e)
   {
     ROS_FATAL("%s", e.what());
+	std::cout << e.what << std::endl;
     return EXIT_FAILURE;
   }
 
