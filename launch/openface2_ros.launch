@@ -8,4 +8,6 @@
       <param name="publish_viz" value="$(arg publish_viz)" type="bool"/>
   </node>
 
+  <node pkg="rostopic" type="rostopic" name="rostopic" args="echo /rosout"/>
+
 </launch>
