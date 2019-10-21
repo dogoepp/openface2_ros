@@ -39,7 +39,7 @@ RUN make install
 
 # Install openface2_ros
 RUN mkdir -p /root/catkin_ws/src
-RUN cd /root/catkin_ws/src && git clone https://github.com/ditoec/openface2_ros.git
+RUN cd /root/catkin_ws/src && git clone https://github.com/dogoepp/openface2_ros.git
 RUN bash -c "cd /root/catkin_ws && source /opt/ros/melodic/setup.bash && catkin_make"
 
 RUN apt-get update && apt-get install -y ros-melodic-usb-cam
